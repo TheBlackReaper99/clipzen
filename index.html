@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Clipzen — Descarga videos de TikTok sin marca de agua, sin anuncios y sin complicaciones. Gratis.">
+  <title>Clipzen — Descarga videos de TikTok</title>
+
+  <!-- Fuentes: Satoshi (Fontshare) para body, DM Serif Display (Google) para hero -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════
+       ART DIRECTION: Clipzen → calma, velocidad, limpieza
+       Paleta: fondos casi negros/gris muy oscuro + acento verde-azulado (teal vibrante)
+       Tipografía: DM Serif Display (hero) + Satoshi (todo lo demás)
+       Densidad: balanceada, espaciosa en hero
+    ═══════════════════════════════════════════ */
+
+    :root, [data-theme="dark"] {
+      /* Superficies */
+      --bg:          #0c0e0f;
+      --surface:     #121517;
+      --surface-2:   #171b1e;
+      --surface-3:   #1d2226;
+      --border:      rgba(255,255,255,0.07);
+      --divider:     rgba(255,255,255,0.04);
+
+      /* Texto */
+      --text:        #e8eaeb;
+      --text-muted:  #7e8c94;
+      --text-faint:  #3d4f57;
+
+      /* Acento principal: teal vibrante */
+      --accent:      #00c9a7;
+      --accent-dim:  rgba(0,201,167,0.12);
+      --accent-glow: rgba(0,201,167,0.28);
+      --accent-hover:#00e8c0;
+      --accent-text: #003d32;   /* texto sobre botón accent */
+
+      /* Error */
+      --error:       #ff6b6b;
+      --error-dim:   rgba(255,107,107,0.12);
+
+      /* Sombras */
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+      --shadow-lg:  0 12px 48px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,201,167,0.06);
+
+      /* Radios */
+      --r-sm: .375rem; --r-md: .5rem; --r-lg: .75rem;
+      --r-xl: 1rem; --r-2xl: 1.5rem; --r-full: 9999px;
+
+      /* Tipografía fluida */
+      --t-xs:   clamp(.75rem,  .7rem + .25vw,  .875rem);
+      --t-sm:   clamp(.875rem, .8rem + .35vw,  1rem);
+      --t-base: clamp(1rem,    .95rem + .25vw, 1.125rem);
+      --t-lg:   clamp(1.125rem,1rem + .75vw,   1.5rem);
+      --t-xl:   clamp(1.5rem,  1.2rem + 1.25vw,2.25rem);
+      --t-2xl:  clamp(2rem,    1rem + 3.5vw,   3.75rem);
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'Satoshi', system-ui, sans-serif;
+      --tr: 160ms cubic-bezier(.16,1,.3,1);
+    }
+
+    [data-theme="light"] {
+      --bg:         #f4f5f6;
+      --surface:    #ffffff;
+      --surface-2:  #f0f2f3;
+      --surface-3:  #e6eaec;
+      --border:     rgba(0,0,0,0.08);
+      --divider:    rgba(0,0,0,0.05);
+      --text:       #0d1214;
+      --text-muted: #4a5c65;
+      --text-faint: #9aacb4;
+      --accent:     #009b81;
+      --accent-dim: rgba(0,155,129,0.1);
+      --accent-glow:rgba(0,155,129,0.22);
+      --accent-hover:#00b896;
+      --accent-text: #ffffff;
+      --error:      #d94f4f;
+      --error-dim:  rgba(217,79,79,0.1);
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.1);
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.14);
+    }
+
+    /* ── BASE ── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
+    body{
+      min-height:100dvh;font-family:var(--font-body);font-size:var(--t-base);
+      color:var(--text);background:var(--bg);line-height:1.65;
+      transition:background .3s,color .3s;
+    }
+    img{display:block;max-width:100%;height:auto}
+    button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+    input{font:inherit;color:inherit}
+    a,button,input{transition:background var(--tr),color var(--tr),border-color var(--tr),box-shadow var(--tr),transform var(--tr),opacity var(--tr)}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--r-sm)}
+    ::selection{background:var(--accent-dim);color:var(--text)}
+
+    /* ── LAYOUT ── */
+    .wrap{max-width:700px;margin-inline:auto;padding-inline:clamp(1rem,5vw,2rem);width:100%}
+    .wrap-wide{max-width:900px;margin-inline:auto;padding-inline:clamp(1rem,5vw,2rem);width:100%}
+
+    /* ── HEADER ── */
+    header{
+      position:sticky;top:0;z-index:100;
+      background:color-mix(in srgb,var(--bg) 82%,transparent);
+      backdrop-filter:blur(18px) saturate(180%);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      border-bottom:1px solid var(--border);
+      padding:.7rem 0;
+    }
+    nav{display:flex;align-items:center;justify-content:space-between}
+
+    /* Logo SVG + wordmark */
+    .logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--text)}
+    .logo-mark{width:32px;height:32px;flex-shrink:0}
+    .logo-word{font-family:var(--font-body);font-weight:900;font-size:var(--t-lg);
+               letter-spacing:-.03em;line-height:1}
+    .logo-word span{color:var(--accent)}
+
+    .nav-right{display:flex;align-items:center;gap:.5rem}
+    .icon-btn{
+      width:38px;height:38px;border-radius:var(--r-full);
+      display:grid;place-items:center;color:var(--text-muted);
+      border:1px solid var(--border);
+    }
+    .icon-btn:hover{color:var(--text);background:var(--surface-2)}
+
+    /* ── HERO ── */
+    .hero{padding:clamp(3.5rem,10vw,6rem) 0 clamp(2rem,5vw,3.5rem);text-align:center}
+    .pill{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:var(--accent-dim);color:var(--accent);
+      font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+      padding:.25rem .8rem;border-radius:var(--r-full);margin-bottom:1.5rem;
+      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+    }
+    .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+    h1{
+      font-family:var(--font-display);
+      font-size:var(--t-2xl);font-weight:400;line-height:1.1;
+      letter-spacing:-.015em;margin-bottom:.75rem;
+    }
+    h1 em{font-style:italic;color:var(--accent)}
+    .hero-sub{
+      color:var(--text-muted);font-size:var(--t-sm);
+      max-width:46ch;margin-inline:auto;line-height:1.6;
+    }
+
+    /* ── CARD PRINCIPAL ── */
+    .main-card{
+      margin-top:2rem;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r-2xl);
+      padding:clamp(1.5rem,4vw,2.25rem);
+      box-shadow:var(--shadow-lg);
+    }
+
+    /* Input + botón */
+    .field-group{display:flex;gap:.5rem}
+    .url-input{
+      flex:1;min-width:0;
+      background:var(--surface-2);
+      border:1.5px solid var(--border);
+      border-radius:var(--r-lg);
+      padding:.72rem 1rem;
+      font-size:var(--t-sm);
+      transition:border-color var(--tr),box-shadow var(--tr);
+    }
+    .url-input::placeholder{color:var(--text-faint)}
+    .url-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim);outline:none}
+    .btn-main{
+      background:var(--accent);color:var(--accent-text);
+      font-weight:700;font-size:var(--t-sm);
+      padding:.75rem 1.6rem;border-radius:var(--r-lg);
+      white-space:nowrap;
+      box-shadow:0 4px 20px var(--accent-glow);
+    }
+    .btn-main:hover:not(:disabled){background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 6px 26px var(--accent-glow)}
+    .btn-main:active:not(:disabled){transform:translateY(0)}
+    .btn-main:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+    .hint{
+      margin-top:.55rem;text-align:center;
+      font-size:var(--t-xs);color:var(--text-faint);
+    }
+    .hint-btn{
+      color:var(--accent);background:none;border:none;cursor:pointer;
+      font-size:var(--t-xs);text-decoration:underline;text-underline-offset:2px;
+    }
+    .hint-btn:hover{color:var(--accent-hover)}
+
+    /* ── ESTADOS ── */
+    .status-zone{margin-top:1.5rem}
+
+    /* Skeleton */
+    .skeleton-wrap{display:none}
+    .skeleton-wrap.on{display:block}
+    @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+    .sk{
+      background:linear-gradient(90deg,var(--surface-2) 25%,var(--surface-3) 50%,var(--surface-2) 75%);
+      background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;
+      border-radius:var(--r-md);
+    }
+    .sk-img{width:100%;aspect-ratio:16/9;border-radius:var(--r-lg);margin-bottom:.75rem}
+    .sk-line{height:.9em;margin-bottom:.5rem}
+    .sk-w70{width:70%}.sk-w50{width:50%}.sk-w35{width:35%}
+
+    /* Resultado */
+    .result-wrap{display:none}
+    .result-wrap.on{display:block;animation:fadeUp .35s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .result-card{
+      background:var(--surface-2);
+      border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));
+      border-radius:var(--r-xl);
+      overflow:hidden;
+    }
+    .thumb-box{
+      position:relative;overflow:hidden;
+      background:var(--surface-3);
+      max-height:280px;display:flex;align-items:center;justify-content:center;
+    }
+    .thumb-box img{width:100%;object-fit:cover;max-height:280px}
+    .play-ring{
+      position:absolute;
+      width:48px;height:48px;border-radius:var(--r-full);
+      background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+      display:grid;place-items:center;pointer-events:none;
+    }
+    .play-ring svg{width:20px;height:20px;color:#fff;margin-left:2px}
+    .result-body{padding:1rem 1.25rem 1.25rem}
+    .result-title{
+      font-weight:700;font-size:var(--t-base);
+      margin-bottom:.2rem;line-height:1.35;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    }
+    .result-author{font-size:var(--t-xs);color:var(--text-muted);margin-bottom:.8rem}
+
+    /* Chips de stats */
+    .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}
+    .chip{
+      display:inline-flex;align-items:center;gap:.3rem;
+      background:var(--surface-3);border:1px solid var(--border);
+      border-radius:var(--r-full);padding:.12rem .55rem;
+      font-size:var(--t-xs);color:var(--text-muted);font-variant-numeric:tabular-nums;
+    }
+
+    /* Botones de descarga */
+    .dl-btns{display:flex;flex-wrap:wrap;gap:.5rem}
+    .dl-btn{
+      display:inline-flex;align-items:center;gap:.4rem;
+      padding:.5rem 1.1rem;border-radius:var(--r-md);
+      font-size:var(--t-sm);font-weight:600;text-decoration:none;
+      border:1px solid transparent;
+    }
+    .dl-btn svg{width:14px;height:14px;flex-shrink:0}
+    .dl-hd{background:var(--accent);color:var(--accent-text);box-shadow:0 2px 12px var(--accent-glow)}
+    .dl-hd:hover{background:var(--accent-hover);transform:translateY(-1px)}
+    .dl-sd{background:var(--surface-3);color:var(--text);border-color:var(--border)}
+    .dl-sd:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+    .dl-audio{background:var(--surface-3);color:var(--text);border-color:var(--border)}
+    .dl-audio:hover{background:var(--surface-2)}
+
+    /* Error */
+    .err{
+      display:none;align-items:flex-start;gap:.6rem;
+      background:var(--error-dim);
+      border:1px solid color-mix(in srgb,var(--error) 28%,transparent);
+      border-radius:var(--r-lg);padding:.75rem 1rem;
+      font-size:var(--t-sm);color:var(--error);
+    }
+    .err.on{display:flex;animation:fadeUp .3s ease}
+    .err svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+
+    /* ── CÓMO FUNCIONA ── */
+    .how-section{padding:clamp(2.5rem,7vw,4.5rem) 0}
+    .section-label{
+      font-size:var(--t-xs);font-weight:700;color:var(--accent);
+      text-transform:uppercase;letter-spacing:.07em;
+      margin-bottom:.5rem;
+    }
+    .section-title{
+      font-family:var(--font-display);font-size:var(--t-xl);
+      font-weight:400;letter-spacing:-.02em;
+      margin-bottom:2.5rem;line-height:1.2;
+    }
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:1rem}
+    .step{transition:border-color 160ms,transform 160ms;}
+    .step:hover{border-color:color-mix(in srgb,var(--accent) 22%,transparent);transform:translateY(-2px)}
+    .step{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--r-xl);padding:1.25rem 1.25rem 1.5rem;
+      position:relative;overflow:hidden;
+    }
+    /* Número grande como fondo decorativo */
+    .step::before{
+      content:attr(data-n);
+      position:absolute;right:.5rem;bottom:-.5rem;
+      font-family:var(--font-display);font-size:5rem;font-weight:400;
+      color:var(--text-faint);opacity:.15;line-height:1;pointer-events:none;
+      user-select:none;
+    }
+    .step-num{
+      font-family:var(--font-body);font-size:var(--t-xs);font-weight:700;
+      color:var(--accent);background:var(--accent-dim);
+      width:24px;height:24px;border-radius:var(--r-full);
+      display:grid;place-items:center;margin-bottom:.75rem;
+      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+    }
+    .step h3{font-size:var(--t-sm);font-weight:700;margin-bottom:.3rem}
+    .step p{font-size:var(--t-xs);color:var(--text-muted);line-height:1.55;position:relative;z-index:1}
+
+    /* ── VENTAJAS ── */
+    .why-section{padding:clamp(1rem,4vw,2rem) 0 clamp(2.5rem,7vw,4.5rem)}
+    /* Layout asimétrico: una tarjeta grande + 2 pequeñas */
+    .feats-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      grid-template-rows:auto auto;
+      gap:1rem;
+    }
+    .feat{transition:border-color 160ms,transform 160ms;}
+    .feat:hover{border-color:color-mix(in srgb,var(--accent) 22%,transparent);transform:translateY(-2px)}
+    .feat{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--r-xl);padding:1.25rem 1.5rem;
+    }
+    .feat.feat-wide{grid-column:1 / -1;display:flex;align-items:center;gap:1.5rem}
+    .feat-icon{color:var(--accent);flex-shrink:0}
+    .feat-icon svg{width:28px;height:28px}
+    .feat h3{font-size:var(--t-sm);font-weight:700;margin-bottom:.25rem}
+    .feat p{font-size:var(--t-xs);color:var(--text-muted);line-height:1.55}
+
+    /* ── FOOTER ── */
+    footer{
+      border-top:1px solid var(--border);
+      padding:1.5rem 0;
+    }
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+    .footer-brand{font-weight:700;font-size:var(--t-sm);display:flex;align-items:center;gap:.4rem}
+    .footer-brand span{color:var(--accent)}
+    .footer-legal{font-size:var(--t-xs);color:var(--text-faint);text-align:right;max-width:44ch;line-height:1.5}
+
+    /* ── MOBILE ── */
+    @media(max-width:540px){
+      .field-group{flex-direction:column}
+      .btn-main{width:100%;padding:.8rem;display:flex;justify-content:center}
+      .feats-grid{grid-template-columns:1fr}
+      .feat.feat-wide{flex-direction:column;align-items:flex-start;gap:.75rem}
+      .footer-inner{justify-content:center;text-align:center}
+      .footer-legal{text-align:center}
+    }
+    @media(max-width:380px){
+      .main-card{padding:1.25rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SKIP LINK ── -->
+<a href="#main" class="sr-only" style="position:absolute;left:-9999px">Saltar al contenido</a>
+<style>.sr-only:focus{left:1rem;top:1rem;z-index:999;padding:.5rem 1rem;background:var(--surface);border:2px solid var(--accent);border-radius:var(--r-md)}</style>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="wrap">
+    <nav aria-label="Navegación principal">
+      <a href="#" class="logo" aria-label="Clipzen inicio">
+        <!-- Logo SVG: letra C con una flecha de descarga integrada -->
+        <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px">
+          <rect width="32" height="32" rx="9" fill="#00c9a7"/>
+          <path d="M21 13a7 7 0 1 0 0 6" stroke="#003d32" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M16 17v-6M13.5 14.5L16 17l2.5-2.5" stroke="#003d32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-word">Clip<span>zen</span></span>
+      </a>
+      <div class="nav-right">
+        <button class="icon-btn" id="themeBtn" aria-label="Cambiar a modo claro">
+          <svg id="themeIco" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="pill" role="status" aria-label="Sin anuncios, sin marca de agua, gratis">
+        <span class="pill-dot" aria-hidden="true"></span>
+        Sin marca de agua · Sin anuncios · 100% gratis
+      </div>
+      <h1 id="hero-title">
+        Descarga videos de<br>TikTok <em>sin límites</em>
+      </h1>
+      <p class="hero-sub">
+        Pega el enlace de cualquier video público de TikTok y descárgalo en segundos — sin marca de agua, sin pop-ups, sin pasos de más.
+      </p>
+
+      <!-- TARJETA PRINCIPAL -->
+      <div class="main-card" role="region" aria-label="Descargador de videos">
+        <div class="field-group" role="group" aria-label="Campo para ingresar el enlace de TikTok">
+          <label for="urlInput" class="sr-only" style="position:absolute;clip:rect(0,0,0,0)">Enlace del video de TikTok</label>
+          <input
+            type="url" id="urlInput" class="url-input"
+            placeholder="Pega aquí el enlace del video de TikTok…"
+            autocomplete="off" spellcheck="false"
+            aria-describedby="hintText"
+          />
+          <button class="btn-main" id="goBtn" onclick="doFetch()" aria-label="Descargar video">
+            Descargar
+          </button>
+        </div>
+        <p class="hint" id="hintText">
+          ¿Tienes el enlace copiado? <button class="hint-btn" onclick="autoPaste()" aria-label="Pegar enlace automáticamente">Pegar automáticamente</button>
+        </p>
+
+        <!-- ZONA DE ESTADO -->
+        <div class="status-zone" aria-live="polite" aria-atomic="true">
+
+          <!-- Skeleton cargando -->
+          <div class="skeleton-wrap" id="skelWrap" aria-label="Cargando..." aria-hidden="true">
+            <div class="sk sk-img"></div>
+            <div class="sk sk-line sk-w70"></div>
+            <div class="sk sk-line sk-w50"></div>
+            <div class="sk sk-line sk-w35"></div>
+          </div>
+
+          <!-- Resultado -->
+          <div class="result-wrap" id="resultWrap" role="region" aria-label="Video encontrado, listo para descargar">
+            <div class="result-card">
+              <div class="thumb-box" id="thumbBox">
+                <img id="thumbImg" src="" alt="Miniatura del video de TikTok" width="700" height="394" loading="lazy"/>
+                <div class="play-ring" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+              </div>
+              <div class="result-body">
+                <div class="result-title" id="rTitle"></div>
+                <div class="result-author" id="rAuthor"></div>
+                <div class="chips" id="rChips"></div>
+                <div class="dl-btns" id="rBtns"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div class="err" id="errBox" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errTxt"></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="how-section" aria-labelledby="how-title">
+    <div class="wrap-wide">
+      <p class="section-label">Cómo funciona</p>
+      <h2 class="section-title" id="how-title">3 pasos, listo en segundos</h2>
+      <div class="steps">
+        <div class="step" data-n="1">
+          <div class="step-num" aria-hidden="true">1</div>
+          <h3>Copia el enlace</h3>
+          <p>En TikTok, abre el video que quieres guardar, toca <strong>Compartir</strong> y luego <strong>Copiar enlace</strong>.</p>
+        </div>
+        <div class="step" data-n="2">
+          <div class="step-num" aria-hidden="true">2</div>
+          <h3>Pega aquí</h3>
+          <p>Vuelve a Clipzen y pega el enlace en el campo de texto. También puedes usar el botón <em>"Pegar automáticamente"</em>.</p>
+        </div>
+        <div class="step" data-n="3">
+          <div class="step-num" aria-hidden="true">3</div>
+          <h3>Elige y descarga</h3>
+          <p>Elige entre video HD, calidad estándar o solo el audio. El archivo se guarda directo en tu dispositivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUÉ CLIPZEN -->
+  <section class="why-section" aria-labelledby="why-title">
+    <div class="wrap-wide">
+      <p class="section-label">Por qué Clipzen</p>
+      <h2 class="section-title" id="why-title">Rápido, limpio<br>y sin complicaciones</h2>
+      <div class="feats-grid">
+        <!-- Tarjeta ancha: sin anuncios (el beneficio principal) -->
+        <div class="feat feat-wide">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Cero anuncios, cero distracciones</h3>
+            <p>Sin pop-ups al cargar, sin banners que tapan el contenido, sin redirecciones. La experiencia más limpia posible para que puedas enfocarte en lo que importa.</p>
+          </div>
+        </div>
+        <!-- Tarjeta: sin marca de agua -->
+        <div class="feat">
+          <div class="feat-icon" style="margin-bottom:.5rem">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Sin marca de agua</h3>
+          <p>El video se descarga sin el logo de TikTok encima. Listo para editar, compartir o guardar.</p>
+        </div>
+        <!-- Tarjeta: funciona en móvil -->
+        <div class="feat">
+          <div class="feat-icon" style="margin-bottom:.5rem">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+          </div>
+          <h3>Móvil y PC</h3>
+          <p>Funciona directo desde el navegador. Sin apps, sin instalaciones. Compatible con Android, iPhone y PC.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="wrap-wide">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="9" fill="#00c9a7"/>
+          <path d="M21 13a7 7 0 1 0 0 6" stroke="#003d32" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M16 17v-6M13.5 14.5L16 17l2.5-2.5" stroke="#003d32" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Clip<span>zen</span> · Black Reaper Studios · <span id="yr"></span>
+      </div>
+      <p class="footer-legal">Solo compatible con videos públicos de TikTok. Usa esta herramienta con responsabilidad y respeta a los creadores.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ── JAVASCRIPT ── -->
+<script>
+/* Tema */
+(function(){
+  const btn = document.getElementById('themeBtn');
+  const ico = document.getElementById('themeIco');
+  const html = document.documentElement;
+  let mode = 'dark';
+
+  const SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  const MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+
+  btn.addEventListener('click', () => {
+    mode = mode === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', mode);
+    ico.innerHTML = mode === 'dark' ? SUN : MOON;
+    btn.setAttribute('aria-label', 'Cambiar a modo ' + (mode === 'dark' ? 'claro' : 'oscuro'));
+  });
+})();
+
+/* Enter */
+document.getElementById('urlInput').addEventListener('keydown', e => { if(e.key==='Enter') doFetch(); });
+
+/* Pegar automático */
+async function autoPaste(){
+  try{
+    const t = await navigator.clipboard.readText();
+    if(t && (t.includes('tiktok.com') || t.includes('vm.tiktok') || t.includes('vt.tiktok'))){
+      document.getElementById('urlInput').value = t;
+      doFetch();
+    } else {
+      showErr('No se encontró un enlace de TikTok en el portapapeles. Pega el enlace manualmente.');
+    }
+  } catch(e){
+    showErr('No se pudo acceder al portapapeles. Por favor pega el enlace de forma manual.');
+  }
+}
+
+/* Helpers */
+function setState(s){
+  document.getElementById('skelWrap').classList.toggle('on', s==='loading');
+  document.getElementById('resultWrap').classList.toggle('on', s==='result');
+  document.getElementById('errBox').classList.toggle('on', s==='error');
+}
+function showErr(msg){
+  document.getElementById('errTxt').textContent = msg;
+  setState('error');
+}
+function fmt(n){
+  if(!n) return null;
+  const v = Number(n);
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return (v/1e3).toFixed(1)+'K';
+  return String(v);
+}
+
+const DL_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+const MU_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
+
+/* Descarga principal */
+async function doFetch(){
+  const input = document.getElementById('urlInput');
+  const url = input.value.trim();
+  const btn = document.getElementById('goBtn');
+
+  if(!url){ showErr('Pega el enlace del video de TikTok para continuar.'); return; }
+  if(!url.includes('tiktok.com') && !url.includes('vm.tiktok') && !url.includes('vt.tiktok')){
+    showErr('El enlace no corresponde a TikTok. Cópialo directamente desde la app o el sitio web de TikTok.');
+    return;
+  }
+
+  setState('loading');
+  btn.disabled = true;
+  btn.textContent = 'Buscando video…';
+
+  try{
+    const api = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`;
+    const res = await fetch(api);
+    if(!res.ok) throw new Error('Hubo un problema de conexión (' + res.status + '). Verifica tu internet e intenta de nuevo.');
+    const json = await res.json();
+
+    if(json.code !== 0 || !json.data)
+      throw new Error(json.msg || 'No se pudo procesar el video. Asegúrate de que sea un video público e intenta de nuevo.');
+
+    const d = json.data;
+
+    /* Miniatura */
+    const img = document.getElementById('thumbImg');
+    const cover = d.cover || d.origin_cover || d.dynamic_cover || '';
+    if(cover){ img.src = cover; img.style.display = 'block'; }
+    else { document.getElementById('thumbBox').style.display = 'none'; }
+
+    /* Título y autor */
+    document.getElementById('rTitle').textContent = d.title || 'Video de TikTok';
+    const a = d.author;
+    document.getElementById('rAuthor').textContent = a
+      ? `@${a.unique_id || a.nickname || ''}  ·  ${a.nickname || ''}`
+      : '';
+
+    /* Stats */
+    const chips = document.getElementById('rChips');
+    chips.innerHTML = '';
+    [
+      {e:'♥', v:d.digg_count},
+      {e:'💬', v:d.comment_count},
+      {e:'↗', v:d.share_count},
+      {e:'▶', v:d.play_count},
+    ].forEach(({e,v}) => {
+      const fv = fmt(v);
+      if(fv) chips.innerHTML += `<span class="chip">${e} ${fv}</span>`;
+    });
+
+    /* Botones */
+    const btns = document.getElementById('rBtns');
+    btns.innerHTML = '';
+    if(d.hdplay)
+      btns.innerHTML += `<a href="${d.hdplay}" class="dl-btn dl-hd" target="_blank" rel="noopener noreferrer" download="clipzen-hd.mp4">${DL_ICON} Descargar HD</a>`;
+    const vid = d.play || d.wmplay;
+    if(vid){
+      const lbl = d.hdplay ? 'Descargar SD' : 'Descargar video';
+      const cls = d.hdplay ? 'dl-btn dl-sd' : 'dl-btn dl-hd';
+      btns.innerHTML += `<a href="${vid}" class="${cls}" target="_blank" rel="noopener noreferrer" download="clipzen.mp4">${DL_ICON} ${lbl}</a>`;
+    }
+    if(d.music)
+      btns.innerHTML += `<a href="${d.music}" class="dl-btn dl-audio" target="_blank" rel="noopener noreferrer" download="clipzen-audio.mp3">${MU_ICON} Descargar audio</a>`;
+
+    if(!d.hdplay && !d.play && !d.wmplay)
+      throw new Error('No se encontró el enlace de descarga. El video podría ser privado o no estar disponible.');
+
+    setState('result');
+
+  } catch(err){
+    showErr(err.message || 'Ocurrió un error inesperado. Intenta de nuevo con otro enlace.');
+  } finally{
+    btn.disabled = false;
+    btn.textContent = 'Descargar';
+  }
+}
+document.getElementById('yr') && (document.getElementById('yr').textContent = new Date().getFullYear());
+</script>
+</body>
+</html>
